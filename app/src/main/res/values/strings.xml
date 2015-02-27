@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Odometer</string>
+    <string name="banner_ad_unit_id">ca-app-pub-5347454521890432/4509152704</string>
+    <string name="enable_location_service_title">GPS Disabled</string>
+    <string name="enable_location_service">Enable location services?</string>
+    <string name="enable">Enable</string>
+    <string name="exit">Exit</string>
+    <string name="nautical_miles">Nautical Miles</string>
+    <string name="mile">Miles</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="distance_default">---</string>
+    <string name="settings">settings</string>
+    <string name="preference_settings_title">User Preferences</string>
+    <string name="list_preference_title">Distance Unit</string>
+    <string name="list_preference_dialog_title">Distance Unit</string>
+    <string name="list_preference_summary">Set your required distance unit</string>
+    <string name="preference_key">unit</string>
+    <string name="default_preference">1</string>
+
+</resources>
+

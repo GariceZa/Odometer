@@ -17,7 +17,7 @@
     <string name="list_preference_dialog_title">Distance Unit</string>
     <string name="list_preference_summary">Set your required distance unit</string>
     <string name="preference_key">unit</string>
-    <string name="default_preference">1</string>
+    <string name="default_preference">1000</string>
 
 </resources>
 

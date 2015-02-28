@@ -21,6 +21,6 @@ public class Preferences {
     protected double getDistanceUnit(){
 
         SharedPreferences get = PreferenceManager.getDefaultSharedPreferences(context);
-        return Double.parseDouble(get.getString("unit", "1"));
+        return Double.parseDouble(get.getString("unit", "1000"));
     }
 }

@@ -19,7 +19,7 @@ public class LocationInfo {
     double distance;
     DecimalFormat twoDec = new DecimalFormat("#.##");
 
-    public LocationInfo(ArrayList locsList,Context con){
+    public LocationInfo(ArrayList<Location> locsList,Context con){
 
         locations = locsList;
         context = con;
@@ -27,26 +27,26 @@ public class LocationInfo {
 
     protected double getDistance() {
 
-        if(locations.size() < 1){
+        if(locations.size() == 1){
             // Return 0 if list only has one entry
             distance = 0;
         }
         else{
             // Loop through list and return total distance
-            for(int i = locations.size() ; i > 0; i--){
+            for(int i = 0 ; i < (locations.size()-1); i++){
 
-            // Set Location A
-            locationA = new Location("A");
-            locationA.setLatitude(locations.get(i).getLatitude());
-            locationA.setLongitude(locations.get(i).getLongitude());
+                // Set Location A
+                locationA = new Location("A");
+                locationA.setLatitude(locations.get(i).getLatitude());
+                locationA.setLongitude(locations.get(i).getLongitude());
 
-            // Set Location B
-            locationB = new Location("B");
-            locationB.setLatitude(locations.get(i--).getLatitude());
-            locationB.setLongitude(locations.get(i--).getLongitude());
+                // Set Location B
+                locationB = new Location("B");
+                locationB.setLatitude(locations.get(i+1).getLatitude());
+                locationB.setLongitude(locations.get(i+1).getLongitude());
 
-            // Set total distance
-            distance += locationA.distanceTo(locationB);
+                // Set total distance
+                distance += locationA.distanceTo(locationB);
             }
         }
         // return total distance formatted with 2 decimal places and in the required distance unit

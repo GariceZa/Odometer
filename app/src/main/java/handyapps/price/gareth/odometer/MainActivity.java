@@ -7,10 +7,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +30,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private LocationManager locMan;
     private String provider;
     private AdView mAdView;
-    private ArrayList<Location> locations;
+    private ArrayList<Location> locations = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,7 +229,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         locMan      = (LocationManager)getSystemService(LOCATION_SERVICE);
         provider    = LocationManager.GPS_PROVIDER;
-        locMan.requestLocationUpdates(provider,5000,0, this);
+        locMan.requestLocationUpdates(provider,2000,0, this);
     }
 
     // Stops location updates
@@ -245,8 +245,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         @Override
         protected Double doInBackground(Location... params) {
-            Log.i("PARAMS",params[0].toString());
+            //Log.v("---PARAMS---",params[0].toString());
             locations.add(params[0]);
+            //Log.v("--LOCATIONS--",locations.get(0).toString());
             LocationInfo locationInfo = new LocationInfo(locations,getApplicationContext());
             return locationInfo.getDistance();
         }

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -243,13 +244,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     // Update distance on background thread
     private class RetrieveDistance extends AsyncTask<Location,Void,Double>{
 
+        int acc = 0;
         @Override
         protected Double doInBackground(Location... params) {
-            //Log.v("---PARAMS---",params[0].toString());
+
             locations.add(params[0]);
-            //Log.v("--LOCATIONS--",locations.get(0).toString());
             LocationInfo locationInfo = new LocationInfo(locations,getApplicationContext());
-            return locationInfo.getDistance();
+            double distance = locationInfo.getDistance();
+            acc = locationInfo.getAccuracy();
+            return distance;
         }
 
         @Override
@@ -258,11 +261,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             super.onPostExecute(aDouble);
             // Sets the text view to the total distance
             distance.setText(String.valueOf(aDouble));
-
+            Toast.makeText(getApplicationContext(),"Accuracy: " + acc,Toast.LENGTH_SHORT).show();
             // Sets the distance unit text view
             setUnit();
         }
-
     }
-
 }

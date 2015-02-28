@@ -14,7 +14,7 @@ public class LocationInfo {
 
 
     private ArrayList<Location> locations;
-    Location locationA,locationB;
+    private Location locationA,locationB;
     private Context context;
     double distance;
     DecimalFormat twoDec = new DecimalFormat("#.##");
@@ -25,6 +25,7 @@ public class LocationInfo {
         context = con;
     }
 
+    // Returns the total distance between all locations stores in locations list
     protected double getDistance() {
 
         if(locations.size() == 1){
@@ -44,6 +45,7 @@ public class LocationInfo {
                 locationB = new Location("B");
                 locationB.setLatitude(locations.get(i+1).getLatitude());
                 locationB.setLongitude(locations.get(i+1).getLongitude());
+                locationB.setAccuracy(locations.get(i+1).getAccuracy());
 
                 // Set total distance
                 distance += locationA.distanceTo(locationB);
@@ -52,5 +54,16 @@ public class LocationInfo {
         // return total distance formatted with 2 decimal places and in the required distance unit
         Preferences prefs = new Preferences(context);
         return Double.valueOf(twoDec.format(distance / prefs.getDistanceUnit()));
+    }
+
+    // Returns the accuracy of the location data
+    protected int getAccuracy(){
+
+        if(locations.size() == 1){
+            return 0;
+        }
+        else{
+            return (int)locationB.getAccuracy();
+        }
     }
 }

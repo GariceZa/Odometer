@@ -32,8 +32,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private LocationManager locMan;
     private String provider;
     private AdView mAdView;
-    private int accuracy = 0;
-    private double dist = 0;
+    private int accuracy;
+    private double dist;
     private ArrayList<Location> locations = new ArrayList<>();
 
     @Override
@@ -125,6 +125,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         outState.putString("STATE_DIST", distance.getText().toString());
         outState.putString("STATE_UNIT",distanceUnit.getText().toString());
         outState.putParcelableArrayList("STATE_LOCATIONS",locations);
+        outState.putInt("accuracy",accuracy);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(outState);
@@ -140,6 +141,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         distance.setText(savedInstanceState.getString("STATE_DIST"));
         distanceUnit.setText(savedInstanceState.getString("STATE_UNIT"));
         locations = savedInstanceState.getParcelableArrayList("STATE_LOCATIONS");
+        accuracy = savedInstanceState.getInt("accuracy");
+        setGpsAccuracy();
     }
 
     // Starts new ad requests from admob

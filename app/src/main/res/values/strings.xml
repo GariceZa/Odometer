@@ -7,9 +7,9 @@
     <string name="enable_location_service">Enable location services?</string>
     <string name="enable">Enable</string>
     <string name="exit">Exit</string>
-    <string name="nautical_miles">Nautical Miles</string>
-    <string name="miles">Miles</string>
-    <string name="kilometers">Kilometers</string>
+    <string name="nautical_miles">NM</string>
+    <string name="miles">Mi</string>
+    <string name="kilometers">KM</string>
     <string name="distance_default">---</string>
     <string name="settings">settings</string>
     <string name="preference_settings_title">User Preferences</string>

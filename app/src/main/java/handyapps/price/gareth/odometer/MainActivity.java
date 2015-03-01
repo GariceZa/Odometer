@@ -14,8 +14,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -28,9 +28,12 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
     private TextView distance,distanceUnit;
+    private ImageView gpsAccuracy;
     private LocationManager locMan;
     private String provider;
     private AdView mAdView;
+    private int accuracy = 0;
+    private double dist = 0;
     private ArrayList<Location> locations = new ArrayList<>();
 
     @Override
@@ -118,9 +121,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
-        // Save the current speed & speed unit
+        // Save the current distance, distance unit and locations arraylist
         outState.putString("STATE_DIST", distance.getText().toString());
         outState.putString("STATE_UNIT",distanceUnit.getText().toString());
+        outState.putParcelableArrayList("STATE_LOCATIONS",locations);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(outState);
@@ -135,6 +139,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         // Restore from saved instance
         distance.setText(savedInstanceState.getString("STATE_DIST"));
         distanceUnit.setText(savedInstanceState.getString("STATE_UNIT"));
+        locations = savedInstanceState.getParcelableArrayList("STATE_LOCATIONS");
     }
 
     // Starts new ad requests from admob
@@ -225,6 +230,21 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         }
     }
 
+    // Sets the satellite icon depending on the location accuracy
+    private void setGpsAccuracy(){
+
+        ImageView gpsAccuracy = (ImageView)findViewById(R.id.ivGPSAccuracy);
+        if(accuracy < 10){
+            gpsAccuracy.setBackgroundResource(R.drawable.gps_high);
+        }
+        else if( accuracy < 20){
+            gpsAccuracy.setBackgroundResource(R.drawable.gps_med);
+        }
+        else{
+            gpsAccuracy.setBackgroundResource(R.drawable.gps_low);
+        }
+    }
+
     // Starts location updates
     private void startLocationUpdates(){
 
@@ -244,15 +264,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     // Update distance on background thread
     private class RetrieveDistance extends AsyncTask<Location,Void,Double>{
 
-        int acc = 0;
         @Override
         protected Double doInBackground(Location... params) {
 
             locations.add(params[0]);
             LocationInfo locationInfo = new LocationInfo(locations,getApplicationContext());
-            double distance = locationInfo.getDistance();
-            acc = locationInfo.getAccuracy();
-            return distance;
+            dist = locationInfo.getDistance();
+            accuracy = locationInfo.getAccuracy();
+            return dist;
         }
 
         @Override
@@ -261,7 +280,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             super.onPostExecute(aDouble);
             // Sets the text view to the total distance
             distance.setText(String.valueOf(aDouble));
-            Toast.makeText(getApplicationContext(),"Accuracy: " + acc,Toast.LENGTH_SHORT).show();
+
+            // sets accuracy icon
+            setGpsAccuracy();
+
             // Sets the distance unit text view
             setUnit();
         }

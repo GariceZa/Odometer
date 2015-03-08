@@ -33,7 +33,7 @@
 
         <activity
             android:name=".ShowUserPreferences"
-            android:label="@string/settings">
+            android:label="@string/preferences">
         </activity>
 
         <!--Include the AdActivity configChanges and theme. -->

@@ -12,10 +12,11 @@
     <string name="kilometers">KM</string>
     <string name="distance_default">---</string>
     <string name="settings">settings</string>
+    <string name="preferences">Preferences</string>
     <string name="preference_settings_title">User Preferences</string>
     <string name="list_preference_title">Distance Unit</string>
     <string name="list_preference_dialog_title">Distance Unit</string>
-    <string name="list_preference_summary">Set your required distance unit</string>
+    <string name="list_preference_summary">Km / Mi / Nm - Changes take effect when your device receives a location update</string>
     <string name="preference_key">unit</string>
     <string name="default_preference">1000</string>
 

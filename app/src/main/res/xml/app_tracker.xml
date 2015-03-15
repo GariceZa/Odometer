@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
+
+    <integer name="ga_sessionTimeout">300</integer>
+
+    <!-- Enable automatic Activity measurement -->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <screenName name="handyapps.price.gareth.odometer.MainActivity">Odometer Main</screenName>
+
+    <screenName name="handyapps.price.gareth.odometer.ShowUserPreferences">Odometer Preferences</screenName>
+
+    <screenName name="com.google.android.gms.ads.AdActivity">Odometer Ads</screenName>
+
+    <string name="ga_trackingId">UA-59558776-4</string>
+</resources>

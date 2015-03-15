@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
+
+    <string name="ga_logLevel">verbose</string>
+    <int name="ga_dispatchPeriod">1</int>
+    <bool name="ga_dryRun">false</bool>
+    <string name="handyapps.price.gareth.odometer.MainActivity">Odometer</string>
+
+</resources>

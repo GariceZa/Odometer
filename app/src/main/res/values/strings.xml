@@ -13,6 +13,7 @@
     <string name="distance_default">---</string>
     <string name="settings">Settings</string>
     <string name="reset">Reset</string>
+    <string name="reset_value">0.0</string>
     <string name="preferences">Preferences</string>
     <string name="preference_settings_title">User Preferences</string>
     <string name="list_preference_title">Distance Unit</string>

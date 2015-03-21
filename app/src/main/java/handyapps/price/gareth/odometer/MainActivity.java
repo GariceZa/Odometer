@@ -113,7 +113,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 break;
             case R.id.action_reset:
                 locations.clear();
-                distance.setText("0.0");
+                distance.setText(getString(R.string.reset_value));
         }
         return true;
     }

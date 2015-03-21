@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class GATrackers extends Application {
 
-    private static final String PROPERTY_ID = "UA-59558776-3";
+    private static final String PROPERTY_ID = "UA-59558776-4";
 
     public enum TrackerName{
         APP_TRACKER,

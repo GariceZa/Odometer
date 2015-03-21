@@ -60,7 +60,7 @@ public class LocationInfo {
     protected int getAccuracy(){
 
         if(locations.size() == 1){
-            return 0;
+            return (int)locations.get(0).getAccuracy();
         }
         else{
             return (int)locationB.getAccuracy();

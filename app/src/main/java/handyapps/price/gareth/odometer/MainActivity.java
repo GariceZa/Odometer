@@ -110,6 +110,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         switch (item.getItemId()){
             case R.id.action_settings:
                 startActivity(new Intent(this,ShowUserPreferences.class));
+                break;
+            case R.id.action_reset:
+                locations.clear();
+                distance.setText("0.0");
         }
         return true;
     }

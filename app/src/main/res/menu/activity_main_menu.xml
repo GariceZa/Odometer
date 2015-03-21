@@ -4,6 +4,13 @@
     xmlns:Odometer="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_reset"
+        android:icon="@drawable/ic_reset"
+        Odometer:showAsAction="ifRoom"
+        android:title="@string/reset"
+        />
+
+    <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings_white"
         Odometer:showAsAction="always"

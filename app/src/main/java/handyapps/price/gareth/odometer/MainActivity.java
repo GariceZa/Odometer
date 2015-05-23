@@ -262,10 +262,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         if(accuracy == 0){
             gpsAccuracy.setBackgroundResource(R.drawable.gps_low);
         }
-        else if(accuracy < 10){
+        else if(accuracy < 5){
             gpsAccuracy.setBackgroundResource(R.drawable.gps_high);
         }
-        else if( accuracy < 20){
+        else if( accuracy < 10){
             gpsAccuracy.setBackgroundResource(R.drawable.gps_med);
         }
         else{

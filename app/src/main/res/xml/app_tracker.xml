@@ -6,6 +6,9 @@
     <!-- Enable automatic Activity measurement -->
     <bool name="ga_autoActivityTracking">true</bool>
 
+    <!--Enable automatic exception tracking-->
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
     <screenName name="handyapps.price.gareth.odometer.MainActivity">Odometer Main</screenName>
 
     <screenName name="handyapps.price.gareth.odometer.ShowUserPreferences">Odometer Preferences</screenName>

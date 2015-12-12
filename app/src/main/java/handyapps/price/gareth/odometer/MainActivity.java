@@ -1,6 +1,8 @@
 package handyapps.price.gareth.odometer;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -9,14 +11,20 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.google.android.gms.ads.AdRequest;
@@ -26,9 +34,9 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import java.util.ArrayList;
 
 
-public class MainActivity extends ActionBarActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
-    private TextView distance,distanceUnit;
+    private TextView distance, distanceUnit;
     private ImageView gpsAccuracy;
     private LocationManager locMan;
     private String provider;
@@ -36,6 +44,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private int accuracy;
     private double dist;
     private ArrayList<Location> locations = new ArrayList<>();
+    private final int REQUEST_PERMISSION_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +62,17 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
         // Get a Tracker (should auto-report)
-        ((GATrackers)getApplication()).getTracker(GATrackers.TrackerName.APP_TRACKER);
+        ((GATrackers) getApplication()).getTracker(GATrackers.TrackerName.APP_TRACKER);
+
+        // reset distance
+        distance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locations.clear();
+                distance.setText(getString(R.string.reset_value));
+            }
+        });
+
     }
 
     @Override
@@ -75,11 +94,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         super.onResume();
         // If the devices location services are disabled
-        if(!locationServiceEnabled()){
+        if (!locationServiceEnabled()) {
             // Notify user
             locationServiceDisabledAlert();
-        }
-        else {
+        } else {
             // Start retrieving location updates
             startLocationUpdates();
             // Start admob
@@ -107,9 +125,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(this,ShowUserPreferences.class));
+                startActivity(new Intent(this, ShowUserPreferences.class));
                 break;
             case R.id.action_reset:
                 locations.clear();
@@ -121,6 +139,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
 
+        Log.i("onLocationChanged","Location update: " + location.toString());
         // Executes an async task to update the speed every time there is a location update
         new RetrieveDistance().execute(location);
     }
@@ -132,12 +151,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     @Override
     public void onProviderEnabled(String provider) {
-        Log.i("--onProviderEnabled","Provider Enabled " + provider);
+        Log.i("--onProviderEnabled", "Provider Enabled " + provider);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Log.i("--onProviderDisabled","Provider Disabled " + provider);
+        Log.i("--onProviderDisabled", "Provider Disabled " + provider);
     }
 
     @Override
@@ -145,9 +164,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         // Save the current distance, distance unit and locations arraylist
         outState.putString("STATE_DIST", distance.getText().toString());
-        outState.putString("STATE_UNIT",distanceUnit.getText().toString());
-        outState.putParcelableArrayList("STATE_LOCATIONS",locations);
-        outState.putInt("accuracy",accuracy);
+        outState.putString("STATE_UNIT", distanceUnit.getText().toString());
+        outState.putParcelableArrayList("STATE_LOCATIONS", locations);
+        outState.putInt("accuracy", accuracy);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(outState);
@@ -168,7 +187,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     // Starts new ad requests from admob
-    private void startAds(){
+    private void startAds() {
 
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -176,18 +195,20 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     // Pauses admob requests
-    private void pauseAds(){
+    private void pauseAds() {
 
-        if(mAdView != null){
+        if (mAdView != null) {
             mAdView.pause();
         }
     }
 
     // Sets the color of the actionbar
-    private void setActionBarColor(){
+    private void setActionBarColor() {
 
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_background)));
+        if (actionbar != null) {
+            actionbar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(MainActivity.this,R.color.primary_background)));
+        }
     }
 
     // Determines if location services are enabled
@@ -198,7 +219,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     // Displays an alert dialog allowing the user to turn location services on
-    private void locationServiceDisabledAlert(){
+    private void locationServiceDisabledAlert() {
 
         //https://github.com/afollestad/material-dialogs
         new MaterialDialog.Builder(this)
@@ -209,76 +230,107 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 .cancelable(false)
                 .iconRes(R.drawable.ic_alert_white)
                 .theme(Theme.DARK)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback(){
+
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+
                         //opens the location service settings
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         // closes the speedometer application
                         finish();
                     }
-
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        // closes the application
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+
                         finish();
                     }
                 })
+
                 .show();
     }
 
     // Sets the text to the digital typeface stored in the assets folder
-    private void setTypeFace(){
+    private void setTypeFace() {
 
-        Typeface digitalFont = Typeface.createFromAsset(getAssets(),"fonts/digital.ttf");
-        distance = (TextView)findViewById(R.id.tvDistance);
+        Typeface digitalFont = Typeface.createFromAsset(getAssets(), "fonts/digital.ttf");
+        distance = (TextView) findViewById(R.id.tvDistance);
         distance.setTypeface(digitalFont);
 
-        distanceUnit = (TextView)findViewById(R.id.tvDistanceUnit);
+        distanceUnit = (TextView) findViewById(R.id.tvDistanceUnit);
         distanceUnit.setTypeface(digitalFont);
     }
 
     // Sets the unit value to display
-    private void setUnit(){
+    private void setUnit() {
 
         Preferences preferences = new Preferences(MainActivity.this);
 
-        if(preferences.getDistanceUnit() == 1000){
+        if (preferences.getDistanceUnit() == 1000) {
 
             distanceUnit.setText(R.string.kilometers);
-        }
-        else if(preferences.getDistanceUnit() == 1609.344){
+        } else if (preferences.getDistanceUnit() == 1609.344) {
             distanceUnit.setText(R.string.miles);
-        }
-        else {
+        } else {
             distanceUnit.setText(R.string.nautical_miles);
         }
     }
 
     // Sets the satellite icon depending on the location accuracy
-    private void setGpsAccuracy(){
+    private void setGpsAccuracy() {
 
-        ImageView gpsAccuracy = (ImageView)findViewById(R.id.ivGPSAccuracy);
-        if(accuracy == 0){
+        ImageView gpsAccuracy = (ImageView) findViewById(R.id.ivGPSAccuracy);
+        if (accuracy == 0) {
             gpsAccuracy.setBackgroundResource(R.drawable.gps_low);
-        }
-        else if(accuracy < 5){
+        } else if (accuracy < 5) {
             gpsAccuracy.setBackgroundResource(R.drawable.gps_high);
-        }
-        else if( accuracy < 10){
+        } else if (accuracy < 10) {
             gpsAccuracy.setBackgroundResource(R.drawable.gps_med);
-        }
-        else{
+        } else {
             gpsAccuracy.setBackgroundResource(R.drawable.gps_low);
         }
     }
 
     // Starts location updates
-    private void startLocationUpdates(){
+    private void startLocationUpdates() {
 
-        locMan      = (LocationManager)getSystemService(LOCATION_SERVICE);
-        provider    = LocationManager.GPS_PROVIDER;
-        locMan.requestLocationUpdates(provider,2000,0, this);
+        // Before starting location updates check the required permissions are allowed
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)){
+
+                Snackbar.make(findViewById(android.R.id.content),"location permission required",Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Allow", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_CODE);
+                            }
+                        })
+                        .show();
+            }
+            else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_CODE);
+            }
+        }
+        else {
+            locMan = (LocationManager) getSystemService(LOCATION_SERVICE);
+            provider = LocationManager.GPS_PROVIDER;
+            locMan.requestLocationUpdates(provider, 2000, 0, this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode){
+
+            case REQUEST_PERMISSION_CODE:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 
     // Stops location updates
